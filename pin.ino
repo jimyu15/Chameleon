@@ -31,5 +31,5 @@ uint8_t check_bat()
 
 void awake()
 {
-  //LPM4_EXIT;
+  stay_asleep = !stay_asleep;
 }
