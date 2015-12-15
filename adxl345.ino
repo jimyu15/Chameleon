@@ -21,9 +21,9 @@ void imu_sleep()
 
 void imu_read(float raw[])
 {
-  raw[0] = get_x() / 256;
-  raw[1] = get_y() / 256;
-  raw[2] = get_z() / 256;
+  raw[0] = get_X() / 256;
+  raw[1] = get_Y() / 256;
+  raw[2] = get_Z() / 256;
 }
 
 float v_len(float v1[])
@@ -37,6 +37,8 @@ float v_len(float v1[])
 
 uint8_t imu_pos()
 {
+  if (!digitalRead(button))
+    return BTN;
   float raw[3];
   imu_read(raw);
   
@@ -59,9 +61,6 @@ uint8_t imu_pos()
   
   if (len[0] < G / 3)
     return FREEFALL;
-  
-  if (len[0] > G * 1.4)
-    return THROW;
   
   
   for (int i = 0; i < 3; i++)
@@ -88,19 +87,19 @@ uint8_t imu_pos()
   return UNSTABLE;
 }
 
-int16_t get_x()
+int16_t get_X()
 {
-  return read16(ADXL345_REG_DATAX0);
+  return imu_read16(ADXL345_REG_DATAX0);
 }
 
-int16_t get_y()
+int16_t get_Y()
 {
-  return read16(ADXL345_REG_DATAY0);
+  return imu_read16(ADXL345_REG_DATAY0);
 }
 
-int16_t get_z()
+int16_t get_Z()
 {
-  return read16(ADXL345_REG_DATAZ0);
+  return imu_read16(ADXL345_REG_DATAZ0);
 }
 
 
@@ -122,13 +121,13 @@ uint8_t getReg(uint8_t reg)
 
 }
 
-int16_t read16(uint8_t reg)
+int16_t imu_read16(uint8_t reg)
 {
   Wire.beginTransmission(IMU_Address);
   Wire.write(reg);
   Wire.endTransmission();
   Wire.requestFrom(IMU_Address, 2);
-  return (uint16_t)(Wire.read() | (Wire.read() << 8));
+  return (int16_t)(Wire.read() | (Wire.read() << 8));
 }
 #endif
 

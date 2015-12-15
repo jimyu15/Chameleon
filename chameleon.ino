@@ -1,15 +1,15 @@
-#include "chameleon.h"
+#include "Chameleon.h"
 #define DEBUG
-#define ADXL335
-//#define ADXL345
+//#define ADXL335
+#define ADXL345
 
 volatile uint8_t state = SLEEP, last_state = 0, blink_num = 0, play_task = 0;
 uint16_t move_event = 0;
 uint16_t count = 0, state_count = 0;
-uint8_t pos = 0, move = 0;
-uint16_t fcolor[50] = {
+uint8_t pos = 0, move = 0, double_click = 0;
+uint16_t fcolor[MAX_COLOR] = {
   0};
-uint16_t tcolor[50] = {
+uint16_t tcolor[MAX_COLOR] = {
   0};
 uint16_t last_color, current_color;
 uint8_t glow_count = 0, glow_limit = 40, glow_rate = 60, brightness = 255;
@@ -130,7 +130,7 @@ void update_pos()
 {
   count++;
   uint8_t new_pos = imu_pos();
-  if (move >= 3 && move <= 5 && count < 10)
+  if (move >= 3 && move <= 6 && count < 10)
   {
     pos = new_pos;
     return;
@@ -162,11 +162,29 @@ void update_pos()
   {
     if (move_event % 10 == FREEFALL && move_event > 80)
       move = FALL;
-    else if (move_event % 10 == THROW && move_event > 30)
-      move = PICK;
-    else if (move_event % 10 == FREEFALL && move_event < 40)
-      move = CLICK;
+    else if (move_event % 10 == BTN && move_event > 200)
+      move = PRESS;
+    else if (move_event % 10 == BTN && move_event < 200)
+    {
+      if (double_click > 5)
+      {
+        double_click = 0;
+        move_event = DCLICK;
+      }
+      else
+      {
+        move = CLICK;
+        double_click = 1;
+      }
+    }
     move_event = 0;
+  }
+
+  if (move != CLICK && double_click)
+  {
+    double_click++;
+    if (double_click > 30)
+      double_click = 0;
   }
 
 }
@@ -189,6 +207,7 @@ void update_stat()
     if (state_count == 1)
     {
       //save();
+      play_task = 0;
       insert_color(tcolor, 0, (int)glow_rate * 2 / 3);
       timer_pause();
       //imu_sleep();
@@ -196,20 +215,18 @@ void update_stat()
     }
     if (glow_count >= glow_limit)
     {
-      //state = SLEEP;
+      attachInterrupt(button, awake, FALLING);
       LPM4;
-    }
-    return;
-    break;
-  case SLEEP://sleeping
-    //if (move == FALL || move == PICK)
-    
+      detachInterrupt(button);
       state = IDLE;
+      blink_num = 0;
       timer_resume();
+      remove_color(tcolor, (int)glow_rate * 2 / 3);
       last_color = 0;
       glow_count = 0;
+    }
     
-      return;
+    return;
     break;
 
   case IDLE://idle
@@ -235,7 +252,7 @@ void update_stat()
     {
       state = SETTING;
     }
-    else if (imu_pos() == BOT && state_count > 400)
+    else if (move == PRESS)
     {
       state = SLEEPING;
       return;
@@ -321,7 +338,7 @@ void update_stat()
       play_task = 0;
       blink_num = 0;
     }
-    else if (move == PICK)
+    else if (move == PRESS)
     {
       state_count = 101;
       remove_color(fcolor, 0);
@@ -362,7 +379,7 @@ void update_stat()
       move = 0;
       blink_num = 0;
     }
-    else if (move == PICK)
+    else if (move == PRESS)
     {
       state_count = 101;
       remove_color(tcolor, glow_rate / 3);
@@ -490,7 +507,7 @@ void glow()
 
 void insert_color(uint16_t color[], uint16_t new_color, uint8_t limit)
 {
-  for (int i = 49; i > 0; i--)
+  for (int i = MAX_COLOR - 1; i > 0; i--)
     color[i] = color[i - 1];
   last_color = color[0];
   color[0] = new_color;
@@ -501,7 +518,7 @@ void insert_color(uint16_t color[], uint16_t new_color, uint8_t limit)
 
 void next_color(uint16_t color[], uint8_t limit)
 {
-  uint8_t num = 49;
+  uint8_t num = MAX_COLOR - 1;
   while (color[num] == 0 && num > 0)
     num--;
   uint16_t temp_color = color[num];
@@ -516,7 +533,7 @@ void next_color(uint16_t color[], uint8_t limit)
 
 void prev_color(uint16_t color[], uint8_t limit)
 {
-  uint8_t num = 49;
+  uint8_t num = MAX_COLOR - 1;
   while (color[num] == 0 && num > 0)
     num--;
   last_color = color[0];
@@ -531,7 +548,7 @@ void prev_color(uint16_t color[], uint8_t limit)
 
 void remove_color(uint16_t color[], uint8_t limit)
 {
-  uint8_t num = 49;
+  uint8_t num = MAX_COLOR - 1;
   while (color[num] == 0 && num > 0)
     num--;
   for (int i = 0; i < num; i++)

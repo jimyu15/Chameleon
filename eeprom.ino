@@ -73,9 +73,9 @@ void read16a(uint8_t addr, uint16_t data[], uint8_t num)
 
 void save()
 {
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < MAX_COLOR / 10; i++)
     write16a(10 + i * 20, fcolor + i * 10, 10);
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < MAX_COLOR / 10; i++)
     write16a(110 + i * 20, tcolor + i * 10, 10);
   
   write8(5, brightness);
@@ -87,9 +87,9 @@ boolean load()
 {
   if (read8(1) != 0xAA)
     return 0;
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < MAX_COLOR / 10; i++)
     read16a(10 + i * 20, fcolor + i * 10, 10);
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < MAX_COLOR / 10; i++)
     read16a(110 + i * 20, tcolor + i * 10, 10);
   
   brightness = read8(5);

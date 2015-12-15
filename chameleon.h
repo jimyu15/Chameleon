@@ -1,7 +1,9 @@
+#define MAX_COLOR 40
+
 
 #define FREEFALL 8
 #define THROW 7
-#define HIT 9
+#define BTN 9
 #define TOP 6
 #define BOT 5
 #define LEFT 4
@@ -13,8 +15,9 @@
 #define CW 1
 #define CCW 2
 #define FALL 3
-#define PICK 4
+#define PRESS 4
 #define CLICK 5
+#define DCLICK 6
 #define MOVING 8
 
 #define SLEEP 0
@@ -29,19 +32,20 @@
 #define RANDOMING 9
 #define SLEEPING 10
 
+#define button 6
 #define int_pin 2
 #define tin P2_4
 #define tout P2_3
 #define R_LED BIT7
 #define F_LED BIT5
-#define S_LED BIT1
+#define S_LED BIT0
 #define L_LED BIT6
 #define R_BLINK BIT3
 #define F_BLINK BIT2
 #define S_BLINK BIT0
 #define L_BLINK BIT4
 
-const char led_pin[5] = {18, 13, 9, 19, 4};
+const char led_pin[5] = {18, 13, 8, 19, 9};
 const char gammatable[256] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,

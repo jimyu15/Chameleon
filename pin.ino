@@ -8,6 +8,7 @@ void pin_init()
   pinMode(tin, OUTPUT);
   digitalWrite(tin, LOW);
   pinMode(tout, INPUT);
+  pinMode(button, INPUT_PULLUP);
 }
 
 uint8_t check_bat()
@@ -26,4 +27,9 @@ uint8_t check_bat()
     default:
       return 0;
   }
+}
+
+void awake()
+{
+  //LPM4_EXIT;
 }
