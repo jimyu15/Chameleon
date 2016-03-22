@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8BA48B92-E6AA-4DBE-994F-3C737CB17756}</ProjectGuid>
+    <RootNamespace>Chameleon</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\energia-0101E0017\hardware\msp430\cores\msp430;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\variants\launchpad;\\psf\Home\Chameleon;\\psf\Home\Documents\Energia\libraries\Adafruit_TCS34725-master;\\psf\Home\Documents\Energia\libraries\Adafruit_TCS34725-master\utility;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\libraries\Wire;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\libraries\Wire\utility;C:\Program Files (x86)\energia-0101E0017\libraries;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\libraries;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\Extensions\yzojodhk.awc\Micro Platforms\default\debuggers;\\psf\Home\Documents\Energia\libraries;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\cores\msp430;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\variants\launchpad;\\psf\Home\Documents\Energia\libraries\Adafruit_TCS34725-master;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\Extensions\yzojodhk.awc\Micro Platforms\default\debuggers\VM_DBG;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\libraries\Wire;C:\Program Files (x86)\energia-0101E0017\libraries;C:\Program Files (x86)\energia-0101E0017\hardware\msp430\libraries;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\Extensions\yzojodhk.awc\Micro Platforms\default\debuggers;\\psf\Home\Documents\Energia\libraries;C:\Program Files (x86)\energia-0101E0017/hardware/tools\msp430\lib\gcc\msp430\4.6.3\include;C:\Program Files (x86)\energia-0101E0017/hardware/tools\msp430\msp430\include;C:\Program Files (x86)\energia-0101E0017/hardware/tools\msp430\msp430\include\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>\\psf\Home\Chameleon\__vm\.Chameleon.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PreprocessorDefinitions>__MSP430_MSp430g2553__;__MSP430_MSP430G2553__;_VMDEBUG=1;F_CPU=16000000L;ARDUINO=105;ENERGIA=9;__cplusplus=201103L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="adxl335.ino" />
+    <None Include="adxl345.ino" />
+    <None Include="Chameleon.ino" />
+    <None Include="eeprom.ino" />
+    <None Include="pin.ino" />
+    <None Include="tcs34725.ino" />
+    <None Include="timer.ino" />
+    <None Include="ws2812.ino" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Chameleon.h" />
+    <ClInclude Include="__vm\.Chameleon.vsarduino.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
