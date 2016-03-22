@@ -2,8 +2,10 @@
 #include <Wire.h>
 
 const uint8_t IMU_Address = 0xA7 >> 1; // ADXL345 的 I2C 地址
+extern int16_t axis_offset[3] = {0};
 float len[10];
 float G = 1;
+
 
 void imu_init()
 {
@@ -11,6 +13,10 @@ void imu_init()
   Wire.begin(); 
   setReg(ADXL345_REG_POWER_CTL, 0x08); //Power on
   setReg(ADXL345_REG_BW_RATE, 0x09);   //Set 50Hz data rate
+  setReg(ADXL345_REG_DATA_FORMAT, 0x0B);
+  delay(1);
+  if (axis_offset[0] == 0 || axis_offset[1] == 0 || axis_offset[2] == 0)
+    imu_cal();
 }
 
 void imu_sleep()
@@ -18,12 +24,27 @@ void imu_sleep()
   setReg(ADXL345_REG_POWER_CTL, 0);
 }
 
+void imu_cal()
+{
+  long sum[3] = {0};
+  for (int i = 0; i < 100; i++)
+  {
+    sum[0] += get_X();
+    sum[1] += get_Y();
+    sum[2] += (get_Z() + 255);
+    delay(20);
+  }
+  for (int i = 0; i < 3; i++)
+  {
+    axis_offset[i] = sum[i] / 100;
+  }
+}
 
 void imu_read(float raw[])
 {
-  raw[0] = get_X() / 256;
-  raw[1] = get_Y() / 256;
-  raw[2] = get_Z() / 256;
+  raw[0] = (float)(get_X() - axis_offset[0]) / 300;
+  raw[1] = (float)(get_Y() - axis_offset[1]) / 300;
+  raw[2] = (float)(get_Z() - axis_offset[2]) / 256;
 }
 
 float v_len(float v1[])

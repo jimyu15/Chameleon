@@ -1,5 +1,5 @@
-const uint8_t led_mask[4] = {BIT1, BIT5, BIT6, BIT7};
-#define pin_mask B10111000
+const uint8_t led_mask[4] = {BIT0, BIT5, BIT6, BIT7};
+#define pin_mask B01111000
 volatile uint8_t blink_count = 0;
 
 void timer_init()

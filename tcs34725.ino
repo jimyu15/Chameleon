@@ -1,16 +1,16 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
-
-
+#define clear_threshold 0xA0
+uint8_t led_pwm = 0;
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS34725_GAIN_4X);
 
 void tcs_init()
 {
   tcs.begin();
-  tcs.setInterrupt(1);
-  tcs.setIntLimits(0x0033, 0x3333);
-  pinMode(int_pin, INPUT);
+  //tcs.setInterrupt(1);
+  //tcs.setIntLimits(0x0033, 0x3333);
+  pinMode(int_pin, INPUT_PULLUP);
 }
 
 void tcs_enable()
@@ -26,8 +26,9 @@ void tcs_disable()
 
 uint16_t tcs_read() {
   uint16_t clear, red, green, blue;
-  digitalWrite(led_pin[4], digitalRead(int_pin));
   tcs.getRawData(&red, &green, &blue, &clear);
+  if (clear < clear_threshold)
+    digitalWrite(led_pin[4], HIGH);
 
   uint32_t sum = clear;
   float r, g, b;

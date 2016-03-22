@@ -30,7 +30,7 @@ void write16a(uint8_t addr, uint16_t data[], uint8_t num)
     Wire.write(data[i] & 0xFF);
   }
   Wire.endTransmission();
-  delay(1);
+  delayMicroseconds(100);
 }
 
 uint8_t read8(uint8_t addr)
@@ -52,7 +52,7 @@ uint16_t read16(uint16_t addr)
   Wire.write(addr);
   Wire.endTransmission();
   delay(1);
-  Wire.requestFrom(rom_addr, 1);
+  Wire.requestFrom(rom_addr, 2);
   data = (Wire.read() << 8) | Wire.read();
   return data;
 }
@@ -71,29 +71,70 @@ void read16a(uint8_t addr, uint16_t data[], uint8_t num)
   }
 }
 
-void save()
+void save(uint8_t n)
 {
-  for (int i = 0; i < MAX_COLOR / 10; i++)
-    write16a(10 + i * 20, fcolor + i * 10, 10);
-  for (int i = 0; i < MAX_COLOR / 10; i++)
-    write16a(110 + i * 20, tcolor + i * 10, 10);
-  
-  write8(5, brightness);
-  write8(7, glow_rate);
-  write8(1, 0xAA);
+  switch (n)
+  {
+  case 0:
+    for (int i = 0; i < 5; i++)
+    {
+      write16a(16 + i * 8, fcolor + i * 4, 4);
+      delay(3);
+    }
+    break;
+  case 1:
+    for (int i = 5; i < 10; i++)
+    {
+      write16a(16 + i * 8, fcolor + i * 4, 4);
+      delay(3);
+    }
+    break;
+  case 2:
+    for (int i = 0; i < 5; i++)
+    {
+      write16a(96 + i * 8, tcolor + i * 4, 4);
+      delay(3);
+    }
+    break;
+  case 3:
+    for (int i = 5; i < 10; i++)
+    {
+      write16a(96 + i * 8, tcolor + i * 4, 4);
+      delay(3);
+    }
+    break;
+  case 4:
+    write8(5, brightness);
+    delay(2);
+    write8(7, glow_rate);
+    delay(2);
+    write8(1, 0xAA);
+    delay(2);
+    break;
+  default:
+    break;
+  }
 }
 
 boolean load()
 {
   if (read8(1) != 0xAA)
     return 0;
-  for (int i = 0; i < MAX_COLOR / 10; i++)
-    read16a(10 + i * 20, fcolor + i * 10, 10);
-  for (int i = 0; i < MAX_COLOR / 10; i++)
-    read16a(110 + i * 20, tcolor + i * 10, 10);
-  
+  delay(2);
+  for (int i = 0; i < 10; i++)
+  {
+    read16a(16 + i * 8, fcolor + i * 4, 4);
+    delay(3);
+  }
+  for (int i = 0; i < 10; i++)
+  {
+    read16a(96 + i * 8, tcolor + i * 4, 4);
+    delay(3);
+  }
   brightness = read8(5);
+  delay(2);
   glow_rate = read8(7);
+  delay(2);
   return 1;
 }
 

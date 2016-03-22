@@ -1,3 +1,4 @@
+#include <ws2811.h>
 #include "Chameleon.h"
 #define DEBUG
 //#define ADXL335
@@ -18,16 +19,15 @@ volatile uint8_t pwm = 0;
 
 void setup()
 {
+  imu_init();
   pin_init();
   led_init();
-  imu_init();
   timer_init();
-  //tcs_init();
+  tcs_init();
   randomSeed(analogRead(6) * analogRead(7));
-  
-  //load();
-  if (1)
-    insert_color(tcolor, 0xFFFF, (int)glow_rate * 2 / 3);
+
+  if (!load())
+    insert_color(tcolor, 0xFFFF, 40);
 
 #ifdef DEBUG
   Serial.begin(9600);
@@ -80,9 +80,9 @@ void loop()
 
   //Serial.println();
 
-  if (state != SLEEPING && millis() / 1000 % 10 == 0)
+  if (state != SLEEPING && millis() / 25 % 400 == 0)
   {
-    //save();
+    save(millis() / 25 / 400 % 4);
   }
   while (millis() % 25)
     LPM0;
@@ -206,11 +206,12 @@ void update_stat()
   case SLEEPING:
     if (state_count == 1)
     {
-      //save();
+      for (int i = 0; i < 4; i++)
+        save(i);
       play_task = 0;
       insert_color(tcolor, 0, (int)glow_rate * 2 / 3);
       timer_pause();
-      //imu_sleep();
+      imu_sleep();
       blink_num = 0;
     }
     if (glow_count >= glow_limit)
